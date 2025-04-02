@@ -1,11 +1,52 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { assets, plans } from "../assets/assets";
 import { AppContext } from "../context/Appcontext";
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line
 import { motion } from "framer-motion";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 const BuyCredit = () => {
-  const { user } = useContext(AppContext);
+  const { user, backendUrl, token, setshowLogin } = useContext(AppContext);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Kiểm tra nếu URL có status=failed thì hiển thị thông báo lỗi
+    const params = new URLSearchParams(location.search);
+    if (params.get("status") === "failed") {
+      toast.error("Payment was canceled.");
+    }
+    if (params.get("status") === "success") {
+      toast.success("Payment successful!");
+    }
+  }, [location]);
+
+  const paymentPaypal = async (planId) => {
+    try {
+      if (!user) {
+        setshowLogin(true);
+        return;
+      }
+      console.log("User object:", user);
+
+      const { data } = await axios.post(
+        backendUrl + "/api/paypal/payment",
+        { userId: user.id, planId },
+        { headers: { token } }
+      );
+
+      if (data.success && data.approval_url) {
+        window.location.href = data.approval_url;
+      } else {
+        toast.error("Unable to create payment, please try again");
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error("Payment error!");
+    }
+  };
+
   return (
     <motion.div
       className="min-h-[80vh] text-center pt-14 mb-10"
@@ -33,7 +74,10 @@ const BuyCredit = () => {
               <span className="text-3xl font-semibold"> ${item.price} </span> /
               {item.credits} credits
             </p>
-            <button className="w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52">
+            <button
+              className="w-full bg-gray-800 text-white mt-8 text-sm rounded-md py-2.5 min-w-52"
+              onClick={() => paymentPaypal(item.id)}
+            >
               {user ? "Purchase" : "Get Started"}
             </button>
           </div>

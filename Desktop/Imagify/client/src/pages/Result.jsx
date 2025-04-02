@@ -1,17 +1,29 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { AppContext } from "../context/Appcontext";
 
 const Result = () => {
-  // eslint-disable-next-line no-unused-vars
   const [image, setImage] = useState(assets.sample_img_1);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  // eslint-disable-next-line no-unused-vars
+
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState("");
-  // eslint-disable-next-line no-unused-vars
-  const onSubmitHandler = async (e) => {};
+  const { generateImage } = useContext(AppContext);
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    if (input) {
+      const image = await generateImage(input);
+      if (image) {
+        setIsImageLoaded(true);
+        setImage(image);
+      }
+    }
+    setLoading(false);
+  };
 
   return (
     <motion.form
