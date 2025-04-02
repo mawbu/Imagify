@@ -203,13 +203,13 @@ const paymentSuccess = async (req, res) => {
           { payment: true }
         );
 
-        res.redirect("http://localhost:5173/buy?status=success");
+        res.redirect("https://imagify-mabuw.onrender.com/buy?status=success");
       }
     }
   );
 };
 const paymentCancel = (req, res) => {
-  res.redirect("http://localhost:5173/buy?status=failed");
+  res.redirect("https://imagify-mabuw.onrender.com/buy?status=failed");
 };
 
 export {
