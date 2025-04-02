@@ -10,7 +10,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Login from "./components/Login";
 import { AppContext } from "./context/Appcontext";
-import PaymentSuccess from "./pages/PaymentSuccess";
+
 
 const App = () => {
   const { showLogin } = useContext(AppContext);
@@ -23,7 +23,6 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/buy" element={<BuyCredit />} />
         <Route path="/result" element={<Result />} />
-        <Route path="/payment-success" element={<PaymentSuccess />} />
       </Routes>
       <Footer />
     </div>
