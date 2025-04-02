@@ -124,8 +124,8 @@ const paymentPaypal = async (req, res) => {
         },
       ],
       redirect_urls: {
-        return_url: `http://localhost:4000/api/paypal/success?userId=${userId}&credits=${credits}`,
-        cancel_url: "http://localhost:4000/api/paypal/cancel",
+        return_url: `https://imagify-jbnx.onrender.com/api/paypal/success?userId=${userId}&credits=${credits}`,
+        cancel_url: "https://imagify-jbnx.onrender.com/api/paypal/cancel",
       },
     };
 
