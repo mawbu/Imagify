@@ -7,8 +7,36 @@ import paypal from "paypal-rest-sdk";
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    const allowedDomains = [
+      "gmail.com",
+      "yahoo.com",
+      "outlook.com",
+      "hotmail.com",
+    ];
+
     if (!name || !email || !password) {
       return res.json({ success: false, message: "Missing Details" });
+    }
+
+    const isValidDomain = async (email) => {
+      const domain = email.split("@")[1];
+      if (allowedDomains.includes(domain)) return true;
+      try {
+        const records = await dns.resolveMx(domain);
+        return records.length > 0;
+      } catch (error) {
+        return false;
+      }
+    };
+    if (!(await isValidDomain(email))) {
+      return res.json({ success: false, message: "Invalid email domain" });
+    }
+
+    if (password.length < 6) {
+      return res.json({
+        success: false,
+        message: "Password must be at least 6 characters long",
+      });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -35,6 +63,10 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email });
+
+    if (!validator.isEmail(email)) {
+      return res.json({ success: false, message: "Invalid email format" });
+    }
 
     if (!user) {
       return res.json({ success: false, message: "User does not exist" });
