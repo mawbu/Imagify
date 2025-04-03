@@ -64,10 +64,6 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ email });
 
-    if (!validator.isEmail(email)) {
-      return res.json({ success: false, message: "Invalid email format" });
-    }
-
     if (!user) {
       return res.json({ success: false, message: "User does not exist" });
     }
