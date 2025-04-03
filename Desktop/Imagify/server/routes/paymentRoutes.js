@@ -8,5 +8,6 @@ import {
 const router = express.Router();
 
 router.post("/paypal/payment", paymentPaypal);
+router.get("/paypal/success", paymentSuccess);
 
 export default router;
